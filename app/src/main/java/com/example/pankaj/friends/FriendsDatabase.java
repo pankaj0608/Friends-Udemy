@@ -35,7 +35,22 @@ public class FriendsDatabase extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase,
+                          int oldVersion, int newVersion) {
 
+        int version = oldVersion;
+        if(version == 1) {
+            //Add some extra fields to the database without deleting existing data
+            version = 2;
+        }
+
+        if(version != DATABASE_VERSION) {
+            sqLiteDatabase.execSQL("drop table if exists " + Tables.FRIENDS);
+            onCreate(sqLiteDatabase);
+        }
+    }
+
+    public static void deleteDatabase(Context context) {
+        context.deleteDatabase(DATABASE_NAME);
     }
 }
